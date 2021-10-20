@@ -1,10 +1,10 @@
 var jogada = 0;
 
-function jogar(event) {
-    if (event.textContent.length > 0) {
+function jogar(itemClicado) {
+    if (itemClicado.textContent.length > 0) {
         alert('Não pode');
-    } else { 
-        event.appendChild(criaTexto(jogadorVez()));
+    } else {
+        itemClicado.appendChild(criaTexto(jogadorVez()));
         jogada++;
         verificarVencedor();
     }
@@ -28,16 +28,23 @@ function verificarVencedor() {
 
 function verificarHorizontal() {
     const linhas = document.getElementsByClassName('linha');
-    const existeVencedor = Array.from(linhas).filter((linha) => {
-        const xVencedor = Array.from(linha.children).every(linha => linha.textContent === 'X'); 
-        const oVencedor = Array.from(linha.children).every(linha => linha.textContent === 'O');
+    const linhaVencedora = Array.from(linhas).find((linha) => {
+        const colunas = linha.children;
+        const xVencedor = verificarLinhaCompleta('X', colunas);
+        const oVencedor = verificarLinhaCompleta('O', colunas);
         return xVencedor || oVencedor;
     });
 
-    if (existeVencedor.length > 0) {
-        return existeVencedor[0].children[0].textContent;
+    if (linhaVencedora) {
+        const jogadorVencedor = linhaVencedora.children[0].textContent
+        return jogadorVencedor;
     }
 
     return '-';
 
+}
+
+
+function verificarLinhaCompleta(nomeJogador, colunas) {
+    return Array.from(colunas).every(coluna => coluna.textContent === nomeJogador);
 }
